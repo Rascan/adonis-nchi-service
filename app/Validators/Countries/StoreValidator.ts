@@ -10,19 +10,5 @@ export default class StoreValidator {
         column: 'name'
       })
     ]),
-    code: schema.string([
-      rules.unique({
-        table: 'countries',
-        column: 'name'
-      })
-    ]),
-    currency: schema.string(),
-    dial_code: schema.string([
-      rules.maxLength(7)
-    ]),
-    trim: schema.boolean.optional(),
-    value: schema.number.optional([
-      rules.requiredWhen('trim', '=', true)
-    ])
   })
 }

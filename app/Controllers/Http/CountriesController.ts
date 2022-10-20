@@ -1,8 +1,6 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Country from 'App/Models/Country'
-import DeleteValidator from 'App/Validators/Countries/DeleteValidator'
 import IndexValidator from 'App/Validators/Countries/IndexValidator'
-import ShowValidator from 'App/Validators/Countries/ShowValidator'
 import StoreValidator from 'App/Validators/Countries/StoreValidator'
 import UpdateValidator from 'App/Validators/Countries/UpdateValidator'
 
@@ -15,7 +13,6 @@ export default class CountriesController {
       data: await Country.query()
         .paginate(page | 1, 20)
     })
-
   }
 
   public async store({ request, response }: HttpContextContract) {
@@ -23,12 +20,18 @@ export default class CountriesController {
 
     response.created({
       data: await Country.create(payload),
-      message: 'Country created successfully'
+      message: 'Country persisted successfully'
     })
   }
 
-  public async show({ params, request, response }: HttpContextContract) {
-    await request.validate(ShowValidator)
+  public async show({ params, response }: HttpContextContract) {
+    const country = await Country.query()
+      .where('id', params.id)
+      .first()
+
+    response.abortIf(!country, {
+      message: 'The country specified could not be found'
+    }, 404)
 
     response.ok({
       data: await Country.find(params.id)
@@ -36,6 +39,14 @@ export default class CountriesController {
   }
 
   public async update({ params, request, response }: HttpContextContract) {
+    const country = await Country.query()
+      .where('id', params.id)
+      .first()
+
+    response.abortIf(!country, {
+      message: 'The country specified could not be found'
+    }, 404)
+
     const payload = await request.validate(UpdateValidator)
 
     response.ok({
@@ -45,14 +56,21 @@ export default class CountriesController {
     })
   }
 
-  public async destroy({ params, request, response }: HttpContextContract) {
-    await request.validate(DeleteValidator)
+  public async destroy({ params, response }: HttpContextContract) {
+    const country = await Country.query()
+      .where('id', params.id)
+      .where('is_active', true)
+      .first()
+
+    response.abortIf(!country, {
+      message: 'The country specified could not be found or is inactive'
+    }, 404)
 
     await Country.query()
-    .where('id', params.id)
-    .update({
-      is_active: false
-    })
+      .where('id', params.id)
+      .update({
+        is_active: false
+      })
 
     response.ok({
       message: 'Country deactivated successfully'

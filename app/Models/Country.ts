@@ -1,48 +1,37 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
-
+import { v4 as uuid } from 'uuid';
+import { 
+  BaseModel, 
+  column, 
+  beforeCreate
+} from '@ioc:Adonis/Lucid/Orm'
 import { string } from '@ioc:Adonis/Core/Helpers'
-
-
 export default class Country extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column({
-    prepare: value => string.titleCase(value),
-  })
+  @column()
   public name: string
 
-  @column({
-    prepare: (value: string) => value.toUpperCase(),
-  })
-  public code: string
-
-  @column({
-    prepare: (value: string) => value.toUpperCase(),
-  })
-  public currency: string
+  @column()
+  public uuid: string
 
   @column()
-  public language_id: number
+  public slug: string
 
-  @column()
-  public dial_code: string
-
-  @column()
-  public trim: boolean
-
-  @column()
-  public value: number
-
-  @column({ 
-    serialize: (value?: number) => Boolean(value), 
-  })
-  public is_active: boolean
-
-  @column.dateTime({ autoCreate: true })
+  @column.dateTime({ autoCreate: true, serializeAs: null })
   public createdAt: DateTime
 
-  @column.dateTime({ autoCreate: true, autoUpdate: true })
+  @column.dateTime({ autoCreate: true, autoUpdate: true, serializeAs: null })
   public updatedAt: DateTime
+
+  @beforeCreate()
+  public static assignUuid(country: Country) {
+    country.uuid = uuid()
+  }
+
+  @beforeCreate()
+  public static assignSlug(country: Country) {
+    country.slug = string.snakeCase(country.name)
+  }
 }
