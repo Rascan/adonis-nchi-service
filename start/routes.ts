@@ -20,6 +20,6 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
-Route.get('/', async () => {
-  return { hello: 'world' }
-})
+Route.resource('countries', 'CountriesController').only([
+  'index', 'show', 'store', 'update', 'destroy'
+])
