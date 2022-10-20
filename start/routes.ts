@@ -20,6 +20,12 @@
 
 import Route from '@ioc:Adonis/Core/Route'
 
-Route.resource('countries', 'CountriesController').only([
-  'index', 'show', 'store', 'update', 'destroy'
-])
+Route.group(() => {
+  Route.resource('countries', 'CountriesController').only([
+    'index', 'show', 'store', 'update', 'destroy'
+  ])
+
+  Route.resource('boundaries', 'BoundariesController').only([
+    'index', 'show', 'store', 'update'
+  ])
+}).prefix('/api/v1/')
