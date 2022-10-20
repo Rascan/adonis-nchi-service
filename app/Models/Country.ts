@@ -3,8 +3,11 @@ import { v4 as uuid } from 'uuid';
 import { 
   BaseModel, 
   column, 
+  hasMany,
+  HasMany, 
   beforeCreate
 } from '@ioc:Adonis/Lucid/Orm'
+import Boundary from 'App/Models/Boundary'
 import { string } from '@ioc:Adonis/Core/Helpers'
 export default class Country extends BaseModel {
   @column({ isPrimary: true })
@@ -34,4 +37,9 @@ export default class Country extends BaseModel {
   public static assignSlug(country: Country) {
     country.slug = string.snakeCase(country.name)
   }
+
+  @hasMany(() => Boundary, {
+    foreignKey: 'country_id',
+  })
+  public boundaries: HasMany<typeof Boundary>
 }
