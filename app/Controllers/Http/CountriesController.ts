@@ -11,6 +11,7 @@ export default class CountriesController {
 
     response.ok({
       data: await Country.query()
+        .preload('boundaries')
         .paginate(page | 1, 20)
     })
   }
