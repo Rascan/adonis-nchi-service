@@ -27,6 +27,7 @@ export default class CountriesController {
 
   public async show({ params, response }: HttpContextContract) {
     const country = await Country.query()
+      .preload('boundaries')
       .where('id', params.id)
       .first()
 
