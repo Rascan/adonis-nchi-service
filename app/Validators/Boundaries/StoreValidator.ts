@@ -5,7 +5,12 @@ export default class StoreValidator {
   constructor(protected ctx: HttpContextContract) { }
 
   public schema = schema.create({
-    country_id: schema.number(),
+    country_id: schema.number([
+      rules.exists({
+        table: 'countries',
+        column: 'id'
+      })
+    ]),
     name: schema.string([
       rules.unique({
         table: 'boundaries',
