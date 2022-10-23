@@ -1,7 +1,16 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, beforeCreate, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
+import { 
+  BaseModel, 
+  column, 
+  beforeCreate, 
+  belongsTo, 
+  BelongsTo,
+  hasMany,
+  HasMany 
+} from '@ioc:Adonis/Lucid/Orm'
 import { v4 as uuid } from 'uuid';
 import Country from 'App/Models/Country'
+import Jurisdiction from 'App/Models/Jurisdiction'
 
 export default class Boundary extends BaseModel {
   @column({ isPrimary: true })
@@ -35,4 +44,9 @@ export default class Boundary extends BaseModel {
     foreignKey: 'country_id',
   })
   public country: BelongsTo<typeof Country>
+
+  @hasMany(() => Jurisdiction, {
+    foreignKey: 'boundary_id',
+  })
+  public jurisdictions: HasMany<typeof Jurisdiction>
 }
