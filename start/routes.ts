@@ -28,4 +28,8 @@ Route.group(() => {
   Route.resource('boundaries', 'BoundariesController').only([
     'index', 'show', 'store', 'update'
   ])
+
+  Route.resource('jurisdictions', 'JurisdictionsController').only([
+    'index', 'show', 'store', 'update'
+  ])
 }).prefix('/api/v1/')
